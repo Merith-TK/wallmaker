@@ -5,27 +5,27 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"time"
 )
 
 type Link struct {
-	ID               int         `json:"id"`
-	Expires          interface{} `json:"expires"`
-	Terms            string      `json:"terms"`
-	Blacklist        string      `json:"blacklist"`
-	PostURL          string      `json:"post_url"`
-	PostThumbnailURL string      `json:"post_thumbnail_url"`
-	PostDescription  string      `json:"post_description"`
-	CreatedAt        time.Time   `json:"created_at"`
-	UpdatedAt        time.Time   `json:"updated_at"`
-	ResponseType     string      `json:"response_type"`
-	ResponseText     string      `json:"response_text"`
-	Username         string      `json:"username"`
-	SetBy            string      `json:"set_by"`
-	Online           bool        `json:"online"`
-	URL              string      `json:"url"`
+	ID               int       `json:"id"`
+	Expires          time.Time `json:"expires"`
+	Username         string    `json:"username"`
+	Terms            string    `json:"terms"`
+	Blacklist        string    `json:"blacklist"`
+	PostURL          string    `json:"post_url"`
+	PostThumbnailURL string    `json:"post_thumbnail_url"`
+	PostDescription  string    `json:"post_description"`
+	CreatedAt        time.Time `json:"created_at"`
+	UpdatedAt        time.Time `json:"updated_at"`
+	SetBy            string    `json:"set_by"`
+	ResponseType     string    `json:"response_type"`
+	ResponseText     string    `json:"response_text"`
+	Online           bool      `json:"online"`
 }
 
 var (
@@ -34,7 +34,10 @@ var (
 
 func fetchLink(id int) Link {
 	var link Link
-	getjson(api+"/links/"+fmt.Sprintf("%d", id)+".json", &link)
+	// convert id to string
+	fetch := fmt.Sprintf("%s/links/%d.json", api, id)
+	debugPrint("[WallMaker] Fetching link", fetch)
+	getjson(fetch, &link)
 	return link
 }
 
@@ -47,6 +50,8 @@ func getjson(url string, target interface{}) error {
 		return errors.New("received non 200 response code")
 	}
 	defer r.Body.Close()
+	log.Println("[WallMaker] Parsing json", url)
+	log.Println("[WallMaker] Parsing json", r.Body)
 	return json.NewDecoder(r.Body).Decode(target)
 }
 

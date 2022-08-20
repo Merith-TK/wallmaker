@@ -16,7 +16,8 @@ var (
 
 type Config struct {
 	Base struct {
-		Base string `toml:"base"`
+		Base  string `toml:"base"`
+		Debug bool   `toml:"debug"`
 	} `toml:"base"`
 	Feed struct {
 		Feed int `toml:"feed"`
@@ -28,6 +29,10 @@ type Config struct {
 		SaveLocation string `toml:"savelocation"`
 		Notification bool   `toml:"notification"`
 	} `toml:"preferences"`
+	Termux struct {
+		Cmd  string   `toml:"cmd"`
+		Args []string `toml:"arg"`
+	} `toml:"termux"`
 }
 
 func setupConfig() error {
