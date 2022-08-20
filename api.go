@@ -34,10 +34,13 @@ var (
 
 func fetchLink(id int) Link {
 	var link Link
-	// convert id to string
 	fetch := fmt.Sprintf("%s/links/%d.json", api, id)
 	debugPrint("[WallMaker] Fetching link", fetch)
-	getjson(fetch, &link)
+	err := getjson(fetch, &link)
+	if err != nil {
+		debugPrint("[WallMaker] Error fetching link", err)
+		return Link{}
+	}
 	return link
 }
 
